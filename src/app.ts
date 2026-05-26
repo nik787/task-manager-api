@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import { prisma } from "./lib/prisma.js";
+
 
 const app = express();
 app.use(helmet());
@@ -14,9 +16,8 @@ app.get("/health", (req, res) => {
 });
 
 app.get("/debug/users-count", (req, res) => {
-  res.json({
-    status: "kok"
-  });
+  const usersCount = prisma.user.count()
+  res.json(usersCount);
 });
 
 export default app
