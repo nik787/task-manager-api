@@ -13,4 +13,10 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.get("/debug/users-count", (req, res) => {
+  res.json({
+    status: "kok"
+  });
+});
+
 export default app
