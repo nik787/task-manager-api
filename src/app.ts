@@ -15,9 +15,13 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.get("/debug/users-count", (req, res) => {
-  const usersCount = prisma.user.count()
-  res.json(usersCount);
+app.get("/debug/users-count", async (req, res) => {
+  const usersCount = await prisma.user.count()
+  res.json({
+    data: {
+      count: usersCount
+    }
+  });
 });
 
 export default app
