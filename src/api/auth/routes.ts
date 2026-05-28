@@ -1,9 +1,9 @@
 import { Router } from "express";
+import { loginService, registerService } from "./service.js";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-  res.json({ message: "Users route" });
-});
+router.post("/register", registerService);
+router.post("/login", loginService);
 
 export default router;
