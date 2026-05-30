@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 
-import { registerSchema } from "./schemas.js";
-import { EmailAlreadyExistsError, registerService } from "./service.js";
+import { loginSchema, registerSchema } from "./schemas.js";
+import { EmailAlreadyExistsError, loginService, registerService, UnauthorizedError } from "./service.js";
 
 export const registerController = async (req: Request, res: Response) => {
   const result = registerSchema.safeParse(req.body);
@@ -43,11 +43,42 @@ export const registerController = async (req: Request, res: Response) => {
   }
 };
 
-export const loginController = async (_req: Request, res: Response) => {
-  return res.status(501).json({
-    error: {
-      message: "Login is not implemented yet",
-      code: "NOT_IMPLEMENTED",
-    },
-  });
+export const loginController = async (req: Request, res: Response) => {
+  const result = loginSchema.safeParse(req.body);
+
+  if (!result.success) {
+    return res.status(400).json({
+      error: {
+        message: "Validation error",
+        code: "VALIDATION_ERROR",
+        issues: result.error.issues,
+      },
+    });
+  }
+
+  try {
+    const authResult = await loginService(result.data);
+
+    return res.status(200).json({
+      data: authResult,
+    });
+  } catch (error) {
+    if (error instanceof UnauthorizedError) {
+      return res.status(401).json({
+        error: {
+          message: error.message,
+          code: "INVALID_CREDENTIALS",
+        },
+      });
+    }
+
+    console.error(error);
+
+    return res.status(500).json({
+      error: {
+        message: "Internal server error",
+        code: "INTERNAL_SERVER_ERROR",
+      },
+    });
+  }
 };
