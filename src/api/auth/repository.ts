@@ -11,6 +11,11 @@ export const createUser = (email: string, passwordHash: string) => {
     data: {
       email,
       passwordHash
-    }
+    },
+    select: {
+      id: true,
+      email: true,
+      createdAt: true,
+    },
   })
 }
