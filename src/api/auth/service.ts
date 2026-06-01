@@ -56,7 +56,7 @@ export const loginService = async (input: LoginInput) => {
 
   const accessToken = jwt.sign(
     {
-      sub: existingUser.id,
+      sub: String(existingUser.id),
       email: existingUser.email,
     },
     config.jwtSecret,
